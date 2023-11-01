@@ -533,6 +533,16 @@ void StateVectorCudaManaged_class_bindings(py::module &m) {
             },
             "Calculate the probabilities for given wires. Results returned in "
             "Col-major order.")
+        .def(
+            "dotWithBraReal",
+            [](StateVectorCudaManaged<PrecisionT> &sv, const StateVectorCudaManaged<PrecisionT> &bra) {
+                using index_type = typename std::conditional<
+                    std::is_same<ParamT, float>::value, int32_t, int64_t>::type;
+                // Real only
+                return (sv.template innerProductWithSV<index_type>(bra)).x;
+            },
+            "Custom BlueQubit method to vdot with a bra."
+        )
         .def("GenerateSamples",
              [](StateVectorCudaManaged<PrecisionT> &sv, size_t num_wires,
                 size_t num_shots) {

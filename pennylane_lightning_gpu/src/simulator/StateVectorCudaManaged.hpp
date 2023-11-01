@@ -1167,6 +1167,28 @@ class StateVectorCudaManaged
         return cusparsehandle_.get();
     }
 
+	/**
+	 * @brief Compute an inner product with the specified statevector.
+	 *
+	 * @tparam index_type TODO probably unused
+	 * @param sv2 Statevector
+	 *
+	 * @return auto Inner product.
+	 */
+    template <class index_type>
+    auto innerProductWithSV(
+           const StateVectorCudaManaged<Precision> &sv2) {
+           auto device_id = BaseType::getDataBuffer().getDevTag().getDeviceID();
+           auto stream_id = BaseType::getDataBuffer().getDevTag().getStreamID();
+
+           // <sv2|self>
+           auto ip = innerProdC_CUDA(
+                           sv2.getData(), BaseType::getData(), BaseType::getLength(),
+                           device_id, stream_id,
+                           getCublasCaller());
+           return ip;
+    }
+
   private:
     SharedCusvHandle handle_;
     SharedCublasCaller cublascaller_;
