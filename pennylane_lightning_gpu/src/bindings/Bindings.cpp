@@ -536,10 +536,8 @@ void StateVectorCudaManaged_class_bindings(py::module &m) {
         .def(
             "dotWithBraReal",
             [](StateVectorCudaManaged<PrecisionT> &sv, const StateVectorCudaManaged<PrecisionT> &bra) {
-                using index_type = typename std::conditional<
-                    std::is_same<ParamT, float>::value, int32_t, int64_t>::type;
                 // Real only
-                return (sv.template innerProductWithSV<index_type>(bra)).x;
+                return (sv.innerProductWithSV(bra)).x;
             },
             "Custom BlueQubit method to vdot with a bra."
         )
